@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Main {
 
     public static void main(String[] args){
@@ -6,14 +8,14 @@ public class Main {
 
         Firebase db = new Firebase(DATABASE_NAME, ACCT_PATH);
 
-
         db.setPath("posts");
 
-        db.write(new Post("name", "stuff"));
+        //db.write(new Post("Creighton", "This is another test post."));
 
-        System.out.println(db.getPath());
 
-        //System.out.println(db.read());
+        System.out.println(db.getPath() + "\n");
+        ArrayList<Post> posts = db.readPosts();
+        for(Post post : posts) System.out.println(post + "\n");
 
     }
 }

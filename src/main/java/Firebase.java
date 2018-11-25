@@ -71,19 +71,42 @@ public class Firebase {
         return "Path: " + ref;
     }
 
-    public Object read(){
-        //TODO: fix null output via asynch listener
 
-        tempValue = null;
-        ref.addListenerForSingleValueEvent(readListener);
-        //while(tempValue == null) {}
-        return tempValue;
+    public static int count;
+    public static ArrayList<Post> posts;
+    public ArrayList<Post> readPosts(){
+        //TODO: make less bad
+
+        posts = new ArrayList();
+        count = 99;
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                count = (int)snapshot.getChildrenCount();
+                //System.out.print("Count: " + count);
+
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    String[] params = child.getValue(Object.class).toString().split("=|\\,|\\}");
+                    posts.add(new Post(Long.parseLong(child.getKey()), params[1], params[3], null, params[5])); // This part's sketchy
+                    //System.out.println(child.getKey());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                System.out.print("Read cancelled");
+            }
+        });
+
+        // Wait until all posts collected.
+        while(posts.size() < count){System.out.print("");} // Honestly don't know why I need a print here but that's the only way it works
+        return posts;
     }
 
-    public Post read(String path){
-        database.getReference(path).addListenerForSingleValueEvent(readListener);
-        return tempValue;
-    }
+//    public Post read(String path){
+//        database.getReference(path).addListenerForSingleValueEvent(readListener);
+//        return tempValue;
+//    }
 
     public void write(Post post){
         counter = new CountDownLatch(1);
