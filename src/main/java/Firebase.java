@@ -12,9 +12,7 @@ public class Firebase {
     private FirebaseDatabase database;
     private DatabaseReference ref;
     private CountDownLatch counter;
-    private ValueEventListener readListener;
     private DatabaseReference.CompletionListener writeListener;
-    private Post tempValue;
 
     public Firebase(String dbName, String acctPath){
         try {
@@ -33,16 +31,16 @@ public class Firebase {
 
         writeListener = (de, dr) -> counter.countDown();
 
-        //TODO: use to detect new posts
-        readListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                tempValue = dataSnapshot.getValue(Post.class);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        };
+//        //TODO: use to detect new posts
+//        readListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                tempValue = dataSnapshot.getValue(Post.class);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {}
+//        };
 
 
         database = FirebaseDatabase.getInstance();
