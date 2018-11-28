@@ -73,6 +73,7 @@ public class Firebase {
     public static int count;
     public static ArrayList<Post> posts;
     public ArrayList<Post> readPosts(){
+        //TODO BIG: CLEANSE INPUT
         //TODO: make less bad
 
         posts = new ArrayList();

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Main {
 
@@ -8,13 +9,16 @@ public class Main {
 
         Firebase db = new Firebase(DATABASE_NAME, ACCT_PATH);
 
+        UI.printLogo();
+
         db.setPath("posts");
 
-        //db.write(new Post("Creighton", "This is another test post."));
+        //db.write(new Post("Abe Lincoln", "Four score and seven years ago our fathers brought forth on this continent a new nation.")); //43 chars line?
 
 
-        System.out.println(db.getPath() + "\n");
+        //System.out.println(db.getPath() + "\n");
         ArrayList<Post> posts = db.readPosts();
+        Collections.reverse(posts);
         for(Post post : posts) System.out.println(post + "\n");
 
     }
