@@ -17,20 +17,23 @@ public class SleepLog {
             boolean wake = false;
             while(!sleep) {
                 try {
-                    System.out.print("When did you fall asleep " + (k+1) + " days ago?");
+                    System.out.print("On night " + (k+1) + " I fell asleep at: ");
                     hours[k][0] = Integer.parseInt(s.nextLine());
+                    if(hours[k][0]<0 || hours[k][0]>2400){
+                        throw new NumberFormatException();
+                    }
                     sleep = true;
                 }catch(NumberFormatException e){
-                    System.out.println("Error: Please enter proper military time.");
+                    System.out.println("Error: Enter proper military time(0000-2400).");
                 }
             }
             while(!wake) {
                 try {
-                    System.out.print("When did you wake up " + (k+1) + " days ago?");
+                    System.out.print("On night " + (k+1) + " I woke up at: ");
                     hours[k][1] = Integer.parseInt(s.nextLine());
                     wake = true;
                 }catch(NumberFormatException e){
-                    System.out.println("Error: Please enter proper military time.");
+                    System.out.println("Error: Enter proper military time.");
                 }
             }
         }
@@ -73,7 +76,7 @@ public class SleepLog {
         int[] difference = {0,0};
 
         for (int k = 0; k<numDays-1; k++){
-            for(int i = 0; k<2; k++) {
+            for(int i = 0; i<2; i++) {
                 int hour1 = (hours[k][i]) / 100;
                 int hour2 = (hours[k + 1][i]) / 100;
                 if(hour1>12 && hour2>12 || hour1<12 && hour2<12){
@@ -86,25 +89,26 @@ public class SleepLog {
             }
         }
         int recommended = numDays*2;
-        if(difference[0]>recommended && difference[1]>recommended){
-            return "Circadian Rhythm is not very good. Try going to sleep and waking up at a scheduled time.";
-        }else if (difference[0] > recommended){
-            return "Circadian Rhythm is almost good. Try going to sleep at a scheduled time";
-        }else if (difference[1] > recommended){
-            return "Circadian Rhythm is almost good. Try waking up at a scheduled time.";
+        double cperc = ((difference[0]/recommended) + (difference[1]/recommended))/2.0;
+        if(cperc<=25){
+            return cperc +"%";
+        }else if (cperc<=50){
+            return cperc+"%";
+        }else if (cperc<=75){
+            return cperc +"%";
         }else{
-            return "Circadian Rhythm is very good! Keep sleeping at a scheduled time!";
+            return cperc +"%";
         }
     }
     // will rate the sleep from that week, use statistics to rate the sleep as good or bad.
     private String rateOfSleep(){
         int recommended = numDays*5;
         if(sCycles()<recommended){
-            return "Not enough sleep cycles were completed for healthy sleep, try sleeping a bit more.";
+            return "Not enough sleep cycles. Try sleeping a bit more.";
         }else if (sCycles() == recommended){
-            return "You had the perfect amount of sleep cycles!";
+            return "Perfect amount of sleep cycles!";
         }else{
-            return "You had more sleep cycles than recommended, try sleeping a bit less.";
+            return "More sleep cycles than recommended. Try sleeping a bit less.";
         }
 
     }
