@@ -1,33 +1,51 @@
 import java.util.*;
+import java.text.*;
 public class SleepLog {
     private int numDays;
     private double[] numHours;
-    private String[][] hours;
+    private int[][] hours;
 
     //This doesn't have to be like this but it was an idea I was having, anyone can make changes.
     //Maybe make it so that the user must input a number between 0 and 2400.
     public SleepLog(int numDays){
         Scanner s = new Scanner(System.in);
         this.numDays = numDays;
-        hours = new String[numDays][2];
+        hours = new int[numDays][2];
         System.out.println("Enter in standard military time. Ex: 1735");
         for(int k = 0; k<numDays; k++){
-            System.out.print("When did you fall asleep " + k + " days ago?");
-            hours[k][0] = s.nextLine();
-            System.out.print("When did you wake up " + k + " days ago?");
-            hours[k][1]= s.nextLine();
+            boolean sleep = false;
+            boolean wake = false;
+            while(!sleep) {
+                try {
+                    System.out.print("When did you fall asleep " + (k+1) + " days ago?");
+                    hours[k][0] = Integer.parseInt(s.nextLine());
+                    sleep = true;
+                }catch(NumberFormatException e){
+                    System.out.println("Error: Please enter proper military time.");
+                }
+            }
+            while(!wake) {
+                try {
+                    System.out.print("When did you wake up " + (k+1) + " days ago?");
+                    hours[k][1] = Integer.parseInt(s.nextLine());
+                    wake = true;
+                }catch(NumberFormatException e){
+                    System.out.println("Error: Please enter proper military time.");
+                }
+            }
         }
         numHours = getNumHours();
     }
     //number of hours slept each night put into an array.
     private double[] getNumHours() {
         numHours = new double[numDays];
+        DecimalFormat df = new DecimalFormat("##.##");
         for(int k =0; k<numDays; k++){
             double sum = 0;
-            int shour = Integer.parseInt(hours[k][0])/100;
-            int sminute = Integer.parseInt(hours[k][0])%100;
-            int whour = Integer.parseInt(hours[k][1])/100;
-            int wminute = Integer.parseInt(hours[k][1])%100;
+            int shour = (hours[k][0])/100;
+            int sminute = (hours[k][0])%100;
+            int whour = (hours[k][1])/100;
+            int wminute = (hours[k][1])%100;
             if(shour>whour){
                 sum+=(24-shour)+whour;
             }else{
@@ -36,6 +54,7 @@ public class SleepLog {
             if(sminute>wminute){
                 sum += ((60-sminute) + wminute)/60.0;
             }
+
             numHours[k] = sum;
         }
         return numHours;
@@ -55,8 +74,8 @@ public class SleepLog {
 
         for (int k = 0; k<numDays-1; k++){
             for(int i = 0; k<2; k++) {
-                int hour1 = Integer.parseInt(hours[k][i]) / 100;
-                int hour2 = Integer.parseInt(hours[k + 1][i]) / 100;
+                int hour1 = (hours[k][i]) / 100;
+                int hour2 = (hours[k + 1][i]) / 100;
                 if(hour1>12 && hour2>12 || hour1<12 && hour2<12){
                     difference[i] += Math.abs(hour1-hour2);
                 }else if(hour1>12){
@@ -92,7 +111,7 @@ public class SleepLog {
     // This could potentially be where the chart John wanted could go. Otherwise, John go wild on how you want to
     //display the info. Has to include the sCycle, cCycle, and rateOfSleep method plus the numHours has the hours
     //they slept written as 7.4 or 4.8 so if you want to change it to h hours and m minutes you can.
-    public String toString(){
+    public String toString(String nickname){
         return "";
     }
 }
