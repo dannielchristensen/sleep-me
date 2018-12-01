@@ -54,7 +54,7 @@ public class Post {
 
         String[] days = new String[]{"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         int dayNum = 0;
-        for(int i = 0; i < days.length; i++) if(currentDay.equals(days[i])) dayNum = i;
+        for(int i = 0; i < days.length; i++) if(currentDay.equalsIgnoreCase(days[i])) dayNum = i;
         while(daysAgo > 0){
             if(dayNum == 0) dayNum = 6;
             else dayNum--;
@@ -109,6 +109,7 @@ public class Post {
         String currYear = currTimestamp[3];
         String currTime = currTimestamp[4] + " " + currTimestamp[5];
         String currMin = currTimestamp[6];
+        String currDayOfWeek = now.getDayOfWeek().toString();
 
         String[] postTimestamp = timestamp.split(" ");
         String postDate = postTimestamp[0] + " " + postTimestamp[1];
@@ -120,22 +121,23 @@ public class Post {
         int minDiff = Integer.parseInt(currMin) - Integer.parseInt(postMin);
         String tempTimestamp;
 
+
+
         int dayDiff = Integer.parseInt(currDay) - Integer.parseInt(postDay);
-        String day = daysAgo(currDay, dayDiff);
-        if(day == null) day = postDate;
+        String day = daysAgo(currDayOfWeek, dayDiff);
+        if(day == null || !(currYear.equals(postYear))) day = postDate;
         if(!(currYear.equals(postYear))) day += ", " + postYear;
         tempTimestamp = day + " at " + postTime;
-        //TODO: FIX YEAR AND DAY OF WEEK
         if(day.matches("Today")){
             if(minDiff <= 1) tempTimestamp = "Just now";
             else if(minDiff < 60) tempTimestamp = minDiff + "m ago";
             else tempTimestamp = (minDiff/60) + "h ago";
         }
 
-
         ArrayList<String> trimmedBody = trimBody();
 
         //TODO: fiddle with format numbers a bit for different lengths.
+        //TODO: make sure to set a nickname limit.
         String result = " _________________________________________________\n" + String.format("%-1s %49s", "|", "|")
                 + "\n|  " + String.format("%-15s %32s", name, tempTimestamp + "  |")
                 + "\n" + String.format("%-1s %49s", "|", "|");
